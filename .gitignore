@@ -1,0 +1,20 @@
+# 환경 변수 파일
+.env
+
+# Python 캐시
+__pycache__/
+*.pyc
+
+# 가상환경
+.venv/
+
+# IDE 설정
+.vscode/
+.idea/
+
+# OS 파일
+.DS_Store
+
+# 생성된 차트 파일들
+*.html
+chart_*
