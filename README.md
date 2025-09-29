@@ -11,4 +11,4 @@ Agent: 캔들+SMA(20,60) .html 인터랙티브 이미지 제공
 Agent → User: "[차트 이미지] 추가 지표 넣을까요? (/edit add rsi | /export html)"
 User → Agent: "/edit add rsi"
 Agent: rsi 오버레이를 포함하는 .html 인터랙티브 이미지 제공
-e
+e dd
