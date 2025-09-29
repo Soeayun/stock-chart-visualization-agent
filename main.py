@@ -17,6 +17,7 @@ os.environ["LANGCHAIN_API_KEY"] = os.getenv("LANGSMITH_API_KEY")
 # 워크플로우 생성
 workflow = create_workflow()
 show_graph(workflow)
+#
 
 if __name__ == "__main__":
     # 테스트 실행
