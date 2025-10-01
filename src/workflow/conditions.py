@@ -13,7 +13,7 @@ def should_route_to_chart(state: State) -> str:
 
 def should_request_params(state: State) -> str:
     """파라미터 완성도 확인"""
-    return "yfinance_node" if state.get("params_complete") else "param_query"
+    return "yfinance_node" if state.get("params_complete") else "param_interrupt"
 
 
 def should_guide_correction(state: State) -> str:

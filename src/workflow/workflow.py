@@ -7,7 +7,7 @@ from langgraph.store.memory import InMemoryStore
 from ..schemas import State
 from ..agents.router_agent import router_agent
 from ..agents.general_chat_agent import general_chat_agent
-from ..tools.param_tool import param_tool
+from ..tools.param_tool import param_tool, param_interrupt_handler
 from ..tools.yfinance_tool import yfinance_node
 from ..tools.guide_correction_tool import guide_correction_node
 from ..tools.visualization_tool import visualization_node
@@ -31,6 +31,7 @@ def create_workflow():
         .add_node("router", router_agent)
         .add_node("general_chat", general_chat_agent)
         .add_node("param_tool", param_tool)
+        .add_node("param_interrupt", param_interrupt_handler)
         .add_node("yfinance_node", yfinance_node)
         .add_node("guide_correction", guide_correction_node)
         .add_node("visualization_node", visualization_node)
@@ -45,13 +46,13 @@ def create_workflow():
         .add_edge("general_chat", END)
         .add_conditional_edges("param_tool", should_request_params, {
             "yfinance_node": "yfinance_node",
-            "param_query": END  # 파라미터 부족시 사용자에게 재질의
+            "param_interrupt": "param_interrupt"  # 파라미터 부족시 interrupt handler로
         })
         .add_conditional_edges("yfinance_node", should_guide_correction, {
             "visualization_node": "visualization_node",
             "guide_correction": "guide_correction"
         })
-        .add_edge("guide_correction", "param_tool")  # 수정 후 파라미터 재검증
+        .add_edge("guide_correction", "yfinance_node")  # 수정 후 데이터 재시도
         .add_conditional_edges("visualization_node", should_enhance, {
             "enhance_node": "enhance_node",
             END: END

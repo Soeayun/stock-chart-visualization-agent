@@ -12,3 +12,6 @@ Agent → User: "[차트 이미지] 추가 지표 넣을까요? (/edit add rsi |
 User → Agent: "/edit add rsi"
 Agent: rsi 오버레이를 포함하는 .html 인터랙티브 이미지 제공
 e dd
+
+
+문제점: 현재 주식차트 그리고 난 뒤에 어떤 주식 차트를 그렸는지 알고있지 못함 => memory쪽 다시 봐야할듯!

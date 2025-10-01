@@ -43,3 +43,31 @@ GENERAL_CHAT_USER_PROMPT = """이전 대화:
 현재 질문: {user_message}
 
 위 질문에 답변하고, 주식 관련이면 차트 시각화를 제안해주세요."""
+
+# Param Tool 프롬프트
+PARAM_EXTRACTION_SYSTEM_PROMPT = """당신은 차트 생성에 필요한 파라미터를 추출하는 도구입니다.
+
+## 필수 파라미터 (모두 있어야 함)
+- ticker: 주식 심볼 (주식명을 심볼로 변환)
+- period: 기간 (1d, 1w, 1mo, 3mo, 6mo, 1y, 2y)
+- interval: 간격 (1m, 5m, 15m, 1h, 4h, 1d)
+- chart_type: 차트 타입 (candlestick, line, bar, area)
+- indicators: 기술적 지표 (price, MA, RSI, MACD, Volume, Bollinger) - 리스트로 반환
+
+## 주식명 → 심볼 변환 예시
+- 엔비디아 → NVDA
+- 애플 → AAPL
+- 마이크로소프트 → MSFT
+- 테슬라 → TSLA
+- 삼성전자 → 005930.KS (한국 주식)
+
+## 중요
+- 모든 파라미터가 있어야 is_complete=True
+- 하나라도 없으면 is_complete=False
+- 부족한 파라미터를 missing_params에 명시
+
+사용자 메시지에서 파라미터를 추출하고, 부족한 파라미터를 식별해주세요."""
+
+PARAM_EXTRACTION_USER_PROMPT = """사용자 메시지: {user_message}
+
+위 메시지에서 차트 생성에 필요한 파라미터를 추출해주세요."""
