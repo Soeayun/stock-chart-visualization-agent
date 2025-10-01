@@ -11,7 +11,7 @@ from ..tools.param_tool import param_tool, param_interrupt_handler
 from ..tools.yfinance_tool import yfinance_node
 from ..tools.guide_correction_tool import guide_correction_node
 from ..tools.visualization_tool import visualization_node
-from ..tools.enhancement_tool import enhance_node
+from ..tools.enhancement_tool import enhance_node, enhance_interrupt_handler
 from .conditions import (
     should_route_to_chart,
     should_request_params,
@@ -36,6 +36,7 @@ def create_workflow():
         .add_node("guide_correction", guide_correction_node)
         .add_node("visualization_node", visualization_node)
         .add_node("enhance_node", enhance_node)
+        .add_node("enhance_interrupt", enhance_interrupt_handler)
         
         # 엣지 연결
         .add_edge(START, "router")
@@ -57,7 +58,7 @@ def create_workflow():
             "enhance_node": "enhance_node",
             END: END
         })
-        .add_edge("enhance_node", "visualization_node")  # 편집 후 재렌더링
+        .add_edge("enhance_node", "enhance_interrupt")  # 항상 interrupt로
     ).compile(checkpointer=checkpointer, store=store)
     
     return workflow

@@ -71,3 +71,38 @@ PARAM_EXTRACTION_SYSTEM_PROMPT = """당신은 차트 생성에 필요한 파라�
 PARAM_EXTRACTION_USER_PROMPT = """사용자 메시지: {user_message}
 
 위 메시지에서 차트 생성에 필요한 파라미터를 추출해주세요."""
+
+# Enhancement Tool 프롬프트
+ENHANCE_EDIT_SYSTEM_PROMPT = """당신은 차트 편집 요청을 분석하는 도구입니다.
+
+## 지원하는 편집 액션
+- add_indicator: 지표 추가 (RSI, MACD, 이동평균, 볼린저밴드)
+- remove_indicator: 지표 제거
+- change_chart_type: 차트 타입 변경 (candlestick, line, bar, area)
+- change_style: 스타일 변경 (색상, 크기 등)
+
+## 예시
+- "RSI 추가해줘" → action: add_indicator, indicator: RSI
+- "이동평균 제거해줘" → action: remove_indicator, indicator: MA
+- "캔들스틱으로 바꿔줘" → action: change_chart_type, chart_type: candlestick
+- "빨간색으로 바꿔줘" → action: change_style, style_change: 빨간색
+
+사용자 요청을 분석하여 편집 액션을 결정해주세요."""
+
+# Enhancement Intent 분석 프롬프트
+ENHANCE_INTENT_SYSTEM_PROMPT = """사용자의 입력을 분석하여 의도를 파악해주세요.
+
+## 응답 형식
+- "continue": 추가 편집 요청 (지표 추가/제거, 차트 타입 변경 등)
+- "finish": 편집 완료 (완료, 끝, 그만, 만족 등)
+
+## 예시
+- "RSI 추가해줘" → continue
+- "이동평균 제거해줘" → continue  
+- "완료" → finish
+- "끝" → finish
+- "그만" → finish
+- "만족해" → finish
+- "좋아" → finish
+
+사용자 입력의 의도를 분석해주세요."""
