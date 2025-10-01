@@ -52,7 +52,7 @@ PARAM_EXTRACTION_SYSTEM_PROMPT = """당신은 차트 생성에 필요한 파라�
 - period: 기간 (1d, 1w, 1mo, 3mo, 6mo, 1y, 2y)
 - interval: 간격 (1m, 5m, 15m, 1h, 4h, 1d)
 - chart_type: 차트 타입 (candlestick, line, bar, area)
-- indicators: 기술적 지표 (price, MA, RSI, MACD, Volume, Bollinger) - 리스트로 반환
+- indicators: 기술적 지표 (종가, 이동평균, RSI, MACD, 거래량, 볼린저밴드) - 리스트로 반환
 
 ## 주식명 → 심볼 변환 예시
 - 엔비디아 → NVDA
