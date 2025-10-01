@@ -1,7 +1,8 @@
 """
 데이터 모델 및 스키마 정의
 """
-from typing import TypedDict, Dict, Any, List, Optional
+from typing import TypedDict, Dict, Any, List, Optional, Literal
+from pydantic import BaseModel, Field
 
 
 class State(TypedDict):
@@ -15,6 +16,14 @@ class State(TypedDict):
     data_available: bool
     chart_output: str
     enhancement_mode: bool
+
+
+class RouterSchema(BaseModel):
+    """라우터 분류 결과"""
+    reasoning: str = Field(description="분류 근거") # Field: metadata를 지정할 때 사용
+    is_chart_request: bool = Field(
+        description="차트 요청인지 여부 (True: 차트 요청, False: 일반 대화)"
+    )
 
 
 class ChartParams(TypedDict):

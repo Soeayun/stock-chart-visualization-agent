@@ -2,6 +2,8 @@
 메인 워크플로우 정의
 """
 from langgraph.graph import StateGraph, START, END
+from langgraph.checkpoint.memory import InMemorySaver
+from langgraph.store.memory import InMemoryStore
 from ..schemas import State
 from ..agents.router_agent import router_agent
 from ..agents.general_chat_agent import general_chat_agent
@@ -20,6 +22,10 @@ from .conditions import (
 
 def create_workflow():
     """LangGraph 워크플로우 생성"""
+    # Checkpointer와 Store 설정
+    checkpointer = InMemorySaver()
+    store = InMemoryStore()
+    
     workflow = (
         StateGraph(State)
         .add_node("router", router_agent)
@@ -51,6 +57,6 @@ def create_workflow():
             END: END
         })
         .add_edge("enhance_node", "visualization_node")  # 편집 후 재렌더링
-    ).compile()
+    ).compile(checkpointer=checkpointer, store=store)
     
     return workflow

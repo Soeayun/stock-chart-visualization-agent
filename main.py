@@ -20,11 +20,48 @@ show_graph(workflow)
 #
 
 if __name__ == "__main__":
-    # 테스트 실행
-    initial_state = {
-        "user_message": "엔비디아의 1년 봉차트를 보여줘",
-        "enhancement_mode": False
-    }
+    print("🚀 주식차트 시각화 Multi-Agent 시스템 시작!")
+    print("종료하려면 'quit' 또는 'exit'를 입력하세요.\n")
     
-    result = workflow.invoke(initial_state)
-    print(f"결과: {result}")
+    # Thread ID 설정 (대화 세션 관리)
+    thread_id = "user_session_1"
+    config = {"configurable": {"thread_id": thread_id}}
+    
+    while True:
+        try:
+            # 사용자 입력 받기
+            user_input = input("💬 사용자: ").strip()
+            
+            # 종료 조건 확인
+            if user_input.lower() in ['quit', 'exit', '종료']:
+                print("👋 시스템을 종료합니다.")
+                break
+            
+            # 빈 입력 처리
+            if not user_input:
+                print("❌ 메시지를 입력해주세요.")
+                continue
+            
+            # 워크플로우 실행
+            initial_state = {
+                "user_message": user_input,
+                "enhancement_mode": False
+            }
+            
+            print("🔄 처리 중...")
+            result = workflow.invoke(initial_state, config)
+            
+            # 결과 출력
+            if "chart_output" in result:
+                print(f"🤖 AI: {result['chart_output']}")
+            else:
+                print(f"🤖 AI: {result}")
+            
+            print("-" * 50)
+            
+        except KeyboardInterrupt:
+            print("\n👋 시스템을 종료합니다.")
+            break
+        except Exception as e:
+            print(f"❌ 오류가 발생했습니다: {e}")
+            print("-" * 50)
