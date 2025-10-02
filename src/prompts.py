@@ -62,9 +62,11 @@ PARAM_EXTRACTION_SYSTEM_PROMPT = """당신은 차트 생성에 필요한 파라�
 - 삼성전자 → 005930.KS (한국 주식)
 
 ## 중요
-- 모든 파라미터가 있어야 is_complete=True
+- 모든 파라미터가 있으면 is_complete=True
 - 하나라도 없으면 is_complete=False
 - 부족한 파라미터를 missing_params에 명시
+- **사용자가 "진행", "예", "네" 등으로 답하면 is_continue=True로 설정**
+- **사용자가 "아니오", "수정" 등으로 답하면 is_continue=False로 설정**
 
 사용자 메시지에서 파라미터를 추출하고, 부족한 파라미터를 식별해주세요."""
 
@@ -76,33 +78,44 @@ PARAM_EXTRACTION_USER_PROMPT = """사용자 메시지: {user_message}
 ENHANCE_EDIT_SYSTEM_PROMPT = """당신은 차트 편집 요청을 분석하는 도구입니다.
 
 ## 지원하는 편집 액션
-- add_indicator: 지표 추가 (RSI, MACD, 이동평균, 볼린저밴드)
-- remove_indicator: 지표 제거
-- change_chart_type: 차트 타입 변경 (candlestick, line, bar, area)
-- change_style: 스타일 변경 (색상, 크기 등)
 
-## 예시
-- "RSI 추가해줘" → action: add_indicator, indicator: RSI
-- "이동평균 제거해줘" → action: remove_indicator, indicator: MA
-- "캔들스틱으로 바꿔줘" → action: change_chart_type, chart_type: candlestick
-- "빨간색으로 바꿔줘" → action: change_style, style_change: 빨간색
+### add_indicator (지표 추가)
+사용자가 새로운 기술적 지표를 추가하고 싶어하는 경우
+- 지원 지표: RSI, MACD, 이동평균, 볼린저밴드, 거래량
+- 예시: "RSI 추가해줘", "MACD 넣어줘", "이동평균 추가"
 
-사용자 요청을 분석하여 편집 액션을 결정해주세요."""
+### remove_indicator (지표 제거)  
+사용자가 기존 지표를 제거하고 싶어하는 경우
+- 예시: "이동평균 제거해줘", "RSI 빼줘", "MACD 없애줘"
 
-# Enhancement Intent 분석 프롬프트
-ENHANCE_INTENT_SYSTEM_PROMPT = """사용자의 입력을 분석하여 의도를 파악해주세요.
+### change_chart_type (차트 타입 변경)
+사용자가 차트 형태를 변경하고 싶어하는 경우
+- 지원 타입: candlestick, line, bar, area
+- 예시: "캔들스틱으로 바꿔줘", "라인 차트로", "막대 차트로"
+
+### change_style (스타일 변경)
+사용자가 차트의 색상, 크기 등을 변경하고 싶어하는 경우
+- 예시: "빨간색으로 바꿔줘", "크게 해줘", "색상 변경"
 
 ## 응답 형식
-- "continue": 추가 편집 요청 (지표 추가/제거, 차트 타입 변경 등)
-- "finish": 편집 완료 (완료, 끝, 그만, 만족 등)
+사용자 요청을 분석하여 적절한 액션과 파라미터를 결정해주세요."""
 
-## 예시
-- "RSI 추가해줘" → continue
-- "이동평균 제거해줘" → continue  
-- "완료" → finish
-- "끝" → finish
-- "그만" → finish
-- "만족해" → finish
-- "좋아" → finish
+ENHANCE_INTENT_SYSTEM_PROMPT = """사용자의 입력을 분석하여 의도를 파악해주세요.
 
-사용자 입력의 의도를 분석해주세요."""
+## 의도 분류
+
+### finish (편집 완료 의도)
+사용자가 차트 편집을 완료하고 싶어하는 경우
+- 완료 표현: "완료", "끝", "그만", "좋아", "만족"
+- 만족 표현: "이제 됐어", "괜찮아", "ok", "좋습니다"
+- 종료 의사: "이제 끝", "그만해", "완성"
+
+### continue (계속 편집 의도)
+사용자가 차트를 계속 편집하고 싶어하는 경우  
+- 추가 요청: "더", "추가", "바꿔", "수정", "변경"
+- 편집 의사: "이것도 바꿔", "다른 걸로", "수정해줘"
+- 개선 요청: "개선", "업그레이드", "더 좋게"
+
+## 응답 형식
+의도만 간단히 답변: finish 또는 continue"""
+

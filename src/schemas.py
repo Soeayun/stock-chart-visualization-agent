@@ -15,6 +15,7 @@ class State(MessagesState):
     params_complete: bool       # 파라미터가 모두 추출/완성되었는지 여부
     missing_params: list        # 부족한(추가로 물어야 할) 파라미터 목록
     chart_params: dict          # 차트 생성에 필요한 파라미터(dict)
+    pending_params: dict        # 사용자 확인 대기 중인 파라미터(dict)
     data_available: bool        # 데이터 수집 성공 여부
     chart_data: dict            # 수집된 차트 데이터(dict)
     chart_output: str           # 차트 생성 결과 메시지(또는 에러 메시지)
@@ -39,6 +40,7 @@ class ParamExtractionSchema(BaseModel):
     indicators: Optional[List[str]] = Field(description="기술적 지표 (예: MA, RSI, MACD)")
     missing_params: List[str] = Field(description="부족한 파라미터 목록")
     is_complete: bool = Field(description="모든 필수 파라미터가 있는지 여부")
+    is_continue: bool = Field(description="사용자가 진행을 원하는지 여부")
 
 
 class ChartParams(TypedDict):

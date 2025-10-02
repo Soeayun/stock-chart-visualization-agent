@@ -185,10 +185,12 @@ def enhance_node(state: State) -> State:
     """
     print("✨ Enhance Node 실행 중...")
     
+    # 기존 chart_output 유지 (visualization_node의 설명 보존)
+    current_output = state.get("chart_output", "")
+    
     # 무조건 사용자 입력 대기
     return {
-        "enhancement_mode": True,
-        "chart_output": "추가로 편집하고 싶으시면 말씀해주세요:\n• 지표 추가/제거 (RSI, MACD, 이동평균, 볼린저밴드, 거래량)\n• 차트 타입 변경 (캔들스틱, 라인, 바, 영역)\n• 스타일 변경 (색상, 크기 등)\n\n완료하시려면 '완료', '끝', '그만' 등을 입력해주세요."
+        "enhancement_mode": True
     }
 
 

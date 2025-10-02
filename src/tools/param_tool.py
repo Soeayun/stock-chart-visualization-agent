@@ -41,6 +41,10 @@ def param_tool(state: State, store: BaseStore) -> State:
     """
     print("🔧 Param Tool 실행 중...")
     
+    # 사용자 메시지 가져오기
+    user_message = state.get("user_message", "")
+    print(f"사용자 메시지: {user_message}")
+    
     # LLM 초기화
     llm = init_chat_model("openai:gpt-4o", temperature=0.0)
     llm_param = llm.with_structured_output(ParamExtractionSchema)
@@ -55,7 +59,7 @@ def param_tool(state: State, store: BaseStore) -> State:
     
     # 파라미터 완성도 확인
     if result.is_complete:
-        # 모든 파라미터가 있으면 다음 단계로
+        # 모든 파라미터가 있으면 사용자 확인 요청
         chart_params = {
             "ticker": result.ticker,
             "period": result.period or "1y",
@@ -66,11 +70,35 @@ def param_tool(state: State, store: BaseStore) -> State:
         
         print(f"✅ 파라미터 수집 완료: {chart_params}")
         
-        return {
-            "params_complete": True,
-            "chart_params": chart_params,
-            "messages": [{"role": "assistant", "content": f"파라미터 수집이 완료되었습니다: {chart_params}"}]
-        }
+        # 사용자가 진행을 원하는 경우 (is_continue=True)
+        if result.is_continue:
+            print("✅ 사용자 확인 완료, 파라미터 적용")
+            return {
+                "params_complete": True,
+                "chart_params": chart_params,
+                "chart_output": "차트를 생성하겠습니다.",
+                "pending_params": {},  # 초기화
+                "messages": [{"role": "assistant", "content": "차트를 생성하겠습니다."}]
+            }
+        else:
+            # 사용자 확인 요청
+            confirmation_message = f"""
+차트 설정을 확인해주세요:
+• 종목: {chart_params['ticker']}
+• 기간: {chart_params['period']}
+• 간격: {chart_params['interval']}
+• 차트 타입: {chart_params['chart_type']}
+• 지표: {', '.join(chart_params['indicators'])}
+
+이대로 진행하시겠습니까? (예/아니오)
+            """
+            
+            return {
+                "params_complete": False,  # 아직 완료되지 않음
+                "chart_output": confirmation_message,
+                "pending_params": chart_params,
+                "messages": [{"role": "assistant", "content": confirmation_message}]
+            }
     else:
         # 부족한 파라미터가 있으면 사용자에게 질의
         missing_params = result.missing_params

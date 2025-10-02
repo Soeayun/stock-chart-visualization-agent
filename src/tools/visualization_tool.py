@@ -8,6 +8,7 @@ import pandas as pd
 import os
 from datetime import datetime
 from typing import Dict, Any
+from langchain.chat_models import init_chat_model
 from ..schemas import State
 
 
@@ -264,8 +265,30 @@ def visualization_node(state: State) -> State:
         
         print(f"✅ 차트 생성 완료: {filepath}")
         
+        # LLM을 사용하여 차트 설명 생성
+        period = chart_data.get("period", "알 수 없음")
+        interval = chart_data.get("interval", "알 수 없음")
+        
+        llm = init_chat_model("openai:gpt-4o", temperature=0.0)
+        description_prompt = f"""
+다음 정보를 바탕으로 생성된 차트를 간단하고 자연스럽게 설명해주세요 (2-3줄):
+
+• 종목: {ticker}
+• 기간: {period}
+• 간격: {interval}
+• 차트 타입: {chart_type}
+• 지표: {', '.join(indicators) if indicators else '없음'}
+
+예시: "애플(AAPL) 주식의 1년간 일봉 차트를 캔들스틱으로 생성했습니다. RSI와 MACD 지표를 포함하여 기술적 분석이 가능합니다."
+"""
+        
+        description_result = llm.invoke([
+            {"role": "user", "content": description_prompt}
+        ])
+        chart_description = description_result.content
+        
         return {
-            "chart_output": f"'{ticker}' 주식 차트가 생성되었습니다. 파일: {filepath}\n\n추가로 편집하고 싶으시면 말씀해주세요:\n• 지표 추가/제거 (RSI, MACD, 이동평균, 볼린저밴드)\n• 차트 타입 변경 (캔들스틱, 라인, 바, 영역)\n• 스타일 변경 (색상, 크기 등)",
+            "chart_output": f"{chart_description}\n\n파일: {filepath}\n\n추가로 편집하고 싶으시면 말씀해주세요:\n• 지표 추가/제거 (RSI, MACD, 이동평균, 볼린저밴드)\n• 차트 타입 변경 (캔들스틱, 라인, 바, 영역)\n• 스타일 변경 (색상, 크기 등)",
             "chart_file": filepath,
             "enhancement_mode": True  # 편집 모드 활성화
         }
